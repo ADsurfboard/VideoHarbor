@@ -83,7 +83,7 @@ public enum YTDLPOutputParser {
     }
 
     public static func friendlyError(from output: String) -> String {
-        let lines = output.split(whereSeparator: \Character.isNewline).map(String.init)
+        let lines = output.split(whereSeparator: { $0.isNewline }).map(String.init)
         let errorLine = lines.last { $0.localizedCaseInsensitiveContains("ERROR:") }
         let raw = errorLine ?? lines.suffix(4).joined(separator: "\n")
         if isCookieAccessFailure(output) {
