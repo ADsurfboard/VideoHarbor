@@ -26,6 +26,7 @@
 
 - 目标：macOS 26，Apple Silicon。
 - 源码保留 macOS 14 回退材质，但 V1 发布物仅对 macOS 26 验收。
+- Core 可由 Swift 5.9 / macOS 14 SDK 构建；包含 `glassEffect` 的完整 GUI 需要 macOS 26 SDK（Xcode 26 / Swift 6.2+）。
 - App Sandbox 关闭，以允许读取用户选定的目录与浏览器 Cookie 数据。
 
 ## 工具链完整性

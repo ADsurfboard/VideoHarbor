@@ -63,4 +63,5 @@
 本机 Command Line Tools 的 Swift 6.3.3 编译器与 `PackageDescription` 动态库
 存在链接版本不一致，因此本机 `swift test` 无法载入任何 SwiftPM manifest；这与
 源码编译无关。项目自带的直接 `swiftc` 测试与完整构建均通过，公开仓库另由
-GitHub Actions 的干净 macOS 14 环境执行 `swift test` 和 `swift build`。
+GitHub Actions 的干净 macOS 14 环境构建 `VideoHarborCore` 并执行 8 项回归；
+完整 GUI 因使用 macOS 26 `glassEffect`，由 Xcode 26 工具链验收。

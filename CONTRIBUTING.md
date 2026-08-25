@@ -10,7 +10,7 @@
 ## 本地开发
 
 ```bash
-swift test
+./test.sh
 swift run VideoHarbor
 ```
 
@@ -25,7 +25,7 @@ swift run VideoHarbor
 
 1. 从 `main` 创建主题分支。
 2. 保持提交聚焦，说明用户可见变化和验证方式。
-3. 确保 `swift test` 通过。
+3. 确保 `./test.sh` 通过；使用 Xcode 26 时也应运行 `swift test`。
 4. 涉及下载行为时，补充授权内容边界和失败路径测试。
 
 提交贡献即表示你同意按本仓库的 MIT License 授权该贡献。

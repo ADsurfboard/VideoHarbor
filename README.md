@@ -34,8 +34,10 @@ video streams that you own or are authorized to download.
 
 ## 系统要求
 
-- 开发：macOS 14 或更高版本、Swift 5.9 或更高版本。
-- 当前发布构建：Apple Silicon；最终界面在 macOS 26 验收。
+- Core 开发与测试：macOS 14 或更高版本、Swift 5.9 或更高版本。
+- 完整 GUI 构建：带 macOS 26 SDK 的 Xcode 26 / Swift 6.2 或更高版本。
+- 当前发布构建：Apple Silicon；运行目标保留 macOS 14 回退材质，最终界面在
+  macOS 26 验收。
 - 完整离线包工具链：Homebrew FFmpeg，以及可访问 yt-dlp/Node.js 官方发布站点。
 
 ## 从源码运行
@@ -45,7 +47,7 @@ video streams that you own or are authorized to download.
 
 ```bash
 brew install yt-dlp ffmpeg node
-swift test
+./test.sh
 swift run VideoHarbor
 ```
 
