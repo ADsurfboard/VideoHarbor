@@ -1,0 +1,19 @@
+.DS_Store
+.build/
+.swiftpm/
+DerivedData/
+
+# Local build products and diagnostic output
+VideoHarbor.app/
+work/
+dist/
+*.zip
+*.dmg
+
+# Rebuilt by scripts/bootstrap_tools.sh; never commit vendor binaries.
+Resources/Tools/*
+!Resources/Tools/README.md
+
+# Local IDE state
+*.xcuserstate
+xcuserdata/

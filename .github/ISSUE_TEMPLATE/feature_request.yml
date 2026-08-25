@@ -1,0 +1,24 @@
+name: Feature request
+description: 提议符合项目边界的新能力
+title: "[Feature] "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 要解决的问题
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 建议方案
+    validations:
+      required: true
+  - type: checkboxes
+    id: boundary
+    attributes:
+      label: 合规确认
+      options:
+        - label: 此建议不涉及 DRM 绕过、会员权益规避、账号风控规避或水印移除。
+          required: true

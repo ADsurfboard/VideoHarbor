@@ -1,0 +1,51 @@
+name: Bug report
+description: 报告可复现的 VideoHarbor 故障
+title: "[Bug] "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: 请先移除链接中的私人参数，且不要上传 Cookie、令牌或下载内容。
+  - type: input
+    id: version
+    attributes:
+      label: VideoHarbor 版本
+      placeholder: 例如 1.0.6 (7)
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS 与芯片
+      placeholder: 例如 macOS 26 / Apple Silicon
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: 视频平台
+      options:
+        - 抖音
+        - 哔哩哔哩
+        - YouTube
+        - TikTok
+        - 与平台无关
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期与实际结果
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: 已脱敏的错误信息
+      render: shell
