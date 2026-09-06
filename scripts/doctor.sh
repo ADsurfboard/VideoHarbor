@@ -55,7 +55,7 @@ else
 fi
 
 scripts_valid=true
-for shell_script in "$PROJECT_DIR/build.sh" "$PROJECT_DIR/test.sh" "$PROJECT_DIR"/scripts/*.sh; do
+for shell_script in "$PROJECT_DIR/build.sh" "$PROJECT_DIR/run.sh" "$PROJECT_DIR/test.sh" "$PROJECT_DIR"/scripts/*.sh; do
     if ! bash -n "$shell_script"; then
         scripts_valid=false
     fi

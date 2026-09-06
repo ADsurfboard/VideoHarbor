@@ -11,7 +11,7 @@
 
 ```bash
 ./test.sh
-swift run VideoHarbor
+./run.sh --check
 ```
 
 生成包含离线工具链的应用前，先执行：

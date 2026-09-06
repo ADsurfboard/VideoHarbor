@@ -49,8 +49,13 @@ video streams that you own or are authorized to download.
 brew install yt-dlp ffmpeg node
 ./scripts/doctor.sh
 ./test.sh
-swift run VideoHarbor
+./run.sh
 ```
+
+`run.sh` 直接调用当前 Xcode/Command Line Tools 的 `swiftc`，不依赖本机
+`PackageDescription` 动态库；因此即使 `swift run` 因 SwiftPM 组件版本不匹配而
+无法载入 manifest，开发版仍可正常编译和启动。只验证完整 GUI 编译而不启动窗口，
+可运行 `./run.sh --check`。
 
 ## 构建独立应用
 

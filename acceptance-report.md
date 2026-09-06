@@ -1,12 +1,12 @@
-# VideoHarbor 1.0.7 验收报告
+# VideoHarbor 1.0.8 验收报告
 
 日期：2026-09-06<br>
 平台：macOS 26.5.2 / Apple Silicon<br>
-应用：VideoHarbor 1.0.7 (build 8)
+应用：VideoHarbor 1.0.8 (build 9)
 
 ## 交付结论
 
-1.0.7 修复了公开源码在干净目录无法构建、弱网下工具下载长期无响应、失败后残留半成品，以及重复构建持续堆积旧 App 的问题。工具准备与 App 构建现均先在临时区完整校验，再整体替换；失败会恢复旧版本。
+1.0.8 在 1.0.7 发布链修复上补齐可靠的源码运行入口：`run.sh` 直接使用 `swiftc`，绕过本机 Swift 编译器与 `PackageDescription` 动态库版本不一致造成的 manifest 链接错误。1.0.7 已修复干净目录无法构建、弱网下载长期无响应、失败后残留半成品，以及重复构建持续堆积旧 App 的问题。
 
 1.0.6 的抖音恢复逻辑保持不变：现场复现确认 yt-dlp 2026.07.04 对已脱敏的真实短链返回 `Fresh cookies (not necessarily logged in) are needed`；Safari Cookie 又被 macOS 阻止读取，普通无 Cookie 回退无法解决这一站点风控要求。
 
@@ -78,3 +78,4 @@ GitHub Actions 的干净 macOS 14 环境构建 `VideoHarborCore` 并执行 8 项
 | 工具链事务 | 通过；错误哈希被拒绝，成功路径组装 19 个 FFmpeg 文件并整体替换 |
 | 构建事务 | 通过；新 App 完成签名、工具启动与 Core 回归后才替换旧 App，失败可恢复 |
 | 源码自检 | `scripts/doctor.sh`：0 个错误；Core 8/8；全部 shell 语法与 Info.plist 校验通过 |
+| 源码运行入口 | `run.sh --check` 完整编译 GUI；不依赖当前损坏的 SwiftPM manifest 运行环境 |
