@@ -1,12 +1,14 @@
-# VideoHarbor 1.0.6 验收报告
+# VideoHarbor 1.0.7 验收报告
 
-日期：2026-08-14  
-平台：macOS 26.5.2 / Apple Silicon  
-应用：VideoHarbor 1.0.6 (build 7)
+日期：2026-09-06<br>
+平台：macOS 26.5.2 / Apple Silicon<br>
+应用：VideoHarbor 1.0.7 (build 8)
 
 ## 交付结论
 
-1.0.6 修复了用户实际抖音分享链接仍无法解析的问题。现场复现确认 yt-dlp 2026.07.04 对已脱敏的真实短链返回 `Fresh cookies (not necessarily logged in) are needed`；Safari Cookie 又被 macOS 阻止读取，普通无 Cookie 回退无法解决这一站点风控要求。
+1.0.7 修复了公开源码在干净目录无法构建、弱网下工具下载长期无响应、失败后残留半成品，以及重复构建持续堆积旧 App 的问题。工具准备与 App 构建现均先在临时区完整校验，再整体替换；失败会恢复旧版本。
+
+1.0.6 的抖音恢复逻辑保持不变：现场复现确认 yt-dlp 2026.07.04 对已脱敏的真实短链返回 `Fresh cookies (not necessarily logged in) are needed`；Safari Cookie 又被 macOS 阻止读取，普通无 Cookie 回退无法解决这一站点风控要求。
 
 新版在且仅在抖音返回新鲜 Cookie 要求时，使用已安装的 Chrome、Edge 或 Brave 建立 VideoHarbor 专属隔离 Profile，等待页面出现真实抖音视频源后再让 yt-dlp 重试。隔离 Profile 不读取用户个人浏览器资料，成功后短期复用于解析和下载，失效时强制刷新一次。
 
@@ -65,3 +67,14 @@
 源码编译无关。项目自带的直接 `swiftc` 测试与完整构建均通过，公开仓库另由
 GitHub Actions 的干净 macOS 14 环境构建 `VideoHarborCore` 并执行 8 项回归；
 完整 GUI 因使用 macOS 26 `glassEffect`，由 Xcode 26 工具链验收。
+
+## 2026-09-06 开源修复验收
+
+| 项目 | 结果 |
+|---|---|
+| 干净目录构建 | 通过；`build.sh` 会先创建 `work`，不再因 `mktemp` 目标不存在而失败 |
+| 弱网与中断 | 通过；官方请求包含连接、低速与总时长上限，中断后临时文件清零，旧工具不变 |
+| 本地复用 | 通过；只有显式提供 64 位 SHA-256 且哈希匹配的同版本工具才允许复用 |
+| 工具链事务 | 通过；错误哈希被拒绝，成功路径组装 19 个 FFmpeg 文件并整体替换 |
+| 构建事务 | 通过；新 App 完成签名、工具启动与 Core 回归后才替换旧 App，失败可恢复 |
+| 源码自检 | `scripts/doctor.sh`：0 个错误；Core 8/8；全部 shell 语法与 Info.plist 校验通过 |

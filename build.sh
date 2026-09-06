@@ -3,15 +3,38 @@
 set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
-BUILD_DIR="$PROJECT_DIR/work/release-build"
+WORK_DIR="$PROJECT_DIR/work"
 APP_NAME="VideoHarbor"
 FINAL_APP_BUNDLE="$PROJECT_DIR/$APP_NAME.app"
-STAGING_ROOT="$(mktemp -d "$PROJECT_DIR/work/release-staging.XXXXXX")"
+mkdir -p "$WORK_DIR"
+STAGING_ROOT="$(mktemp -d "$WORK_DIR/release-staging.XXXXXX")"
+BUILD_DIR="$STAGING_ROOT/build"
 APP_BUNDLE="$STAGING_ROOT/$APP_NAME.app"
+PREVIOUS_APP_BUNDLE="$STAGING_ROOT/previous-$APP_NAME.app"
 APP_MACOS="$APP_BUNDLE/Contents/MacOS"
 APP_RESOURCES="$APP_BUNDLE/Contents/Resources"
 SDK_PATH="$(xcrun --show-sdk-path)"
 TARGET="arm64-apple-macos14.0"
+FINAL_REPLACEMENT_STARTED=false
+
+cleanup() {
+    local status=$?
+    trap - EXIT INT TERM
+
+    if (( status != 0 )) && [[ "$FINAL_REPLACEMENT_STARTED" == true ]]; then
+        if [[ -e "$FINAL_APP_BUNDLE" ]]; then
+            mv "$FINAL_APP_BUNDLE" "$STAGING_ROOT/failed-$APP_NAME.app"
+        fi
+        if [[ -e "$PREVIOUS_APP_BUNDLE" ]]; then
+            mv "$PREVIOUS_APP_BUNDLE" "$FINAL_APP_BUNDLE"
+            echo "Build failed; restored the previous app bundle." >&2
+        fi
+    fi
+
+    rm -rf -- "$STAGING_ROOT"
+    exit "$status"
+}
+trap cleanup EXIT INT TERM
 
 mkdir -p "$BUILD_DIR"
 
@@ -94,11 +117,11 @@ plutil -lint "$APP_BUNDLE/Contents/Info.plist"
 echo "[6/6] Running core tests"
 "$PROJECT_DIR/test.sh"
 
+FINAL_REPLACEMENT_STARTED=true
 if [[ -e "$FINAL_APP_BUNDLE" ]]; then
-    PREVIOUS_DIR="$PROJECT_DIR/work/previous-builds"
-    mkdir -p "$PREVIOUS_DIR"
-    mv "$FINAL_APP_BUNDLE" "$PREVIOUS_DIR/$APP_NAME-$(date +%Y%m%d-%H%M%S)-$$.app"
+    mv "$FINAL_APP_BUNDLE" "$PREVIOUS_APP_BUNDLE"
 fi
 mv "$APP_BUNDLE" "$FINAL_APP_BUNDLE"
+codesign --verify --deep --strict "$FINAL_APP_BUNDLE"
 
 echo "Built: $FINAL_APP_BUNDLE"

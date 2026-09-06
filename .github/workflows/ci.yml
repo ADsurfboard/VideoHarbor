@@ -13,6 +13,12 @@ jobs:
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
+      - name: Validate release scripts and metadata
+        run: |
+          for shell_script in build.sh test.sh scripts/*.sh; do
+            bash -n "$shell_script"
+          done
+          plutil -lint Resources/Info.plist
       - name: Show Swift version
         run: swift --version
       - name: Build core package target

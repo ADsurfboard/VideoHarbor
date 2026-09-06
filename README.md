@@ -47,6 +47,7 @@ video streams that you own or are authorized to download.
 
 ```bash
 brew install yt-dlp ffmpeg node
+./scripts/doctor.sh
 ./test.sh
 swift run VideoHarbor
 ```
@@ -58,14 +59,23 @@ swift run VideoHarbor
 
 ```bash
 ./scripts/bootstrap_tools.sh
+./scripts/doctor.sh --release
 ./build.sh
 open VideoHarbor.app
 ```
 
-`build.sh` 会逐个校验 `Resources/Tools` 中的 Mach-O 文件，为未通过校验的本地
-二进制补充 ad-hoc 签名，并保留有效的上游签名，再验证
-FFmpeg/ffprobe 可启动。生成的 `VideoHarbor.app` 与 `Resources/Tools` 都被
-`.gitignore` 排除。
+`bootstrap_tools.sh` 要求至少 1 GiB 可用空间。它通过带超时和低速保护的官方接口
+下载、校验并在临时目录组装工具链；只有全部工具能启动时才替换旧工具，因此网络
+中断不会留下半套文件。`build.sh` 同样先在临时目录完成编译、签名和 8 项 Core
+回归，再以可回滚方式替换旧应用，不会累积历史构建副本。生成的
+`VideoHarbor.app` 与 `Resources/Tools` 都被 `.gitignore` 排除。
+
+若命令报错，先运行 `./scripts/doctor.sh`。Core 开发缺少内置工具只会给出警告；
+发布构建请使用 `--release`，任何缺失项都会明确列出。
+
+维护者在官方站点速度异常时，也可通过 `YT_DLP_SOURCE` / `NODE_SOURCE` 指向本机
+已有的同版本二进制，并分别提供 `YT_DLP_SHA256` / `NODE_SHA256`。脚本拒绝未声明
+哈希或哈希不匹配的本地文件；这只复用经过明确校验的输入，不会静默信任缓存。
 
 ## 项目结构
 

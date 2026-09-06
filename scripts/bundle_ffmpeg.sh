@@ -3,7 +3,7 @@
 set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-TOOLS_DIR="$PROJECT_DIR/Resources/Tools"
+TOOLS_DIR="${TOOLS_DIR_OVERRIDE:-$PROJECT_DIR/Resources/Tools}"
 LIB_DIR="$TOOLS_DIR/lib"
 FFMPEG_SOURCE="${FFMPEG_SOURCE:-/opt/homebrew/bin/ffmpeg}"
 FFPROBE_SOURCE="${FFPROBE_SOURCE:-/opt/homebrew/bin/ffprobe}"
@@ -54,11 +54,17 @@ while [[ $index -lt ${#queue[@]} ]]; do
 done
 
 for file in "${queue[@]}"; do
-    if otool -L "$file" | grep -q '^\s*/opt/homebrew/'; then
+    if otool -L "$file" | grep -q '^[[:space:]]*/opt/homebrew/'; then
         echo "Unresolved Homebrew dependency: $file" >&2
         otool -L "$file" >&2
         exit 1
     fi
+done
+
+for ((position=${#queue[@]} - 1; position >= 0; position--)); do
+    file="${queue[$position]}"
+    codesign --force --sign - "$file"
+    codesign --verify --strict "$file"
 done
 
 "$TOOLS_DIR/ffmpeg" -version | head -n 3
